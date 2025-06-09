@@ -42,8 +42,11 @@ public class ConfiguracoesSeguranca {
                     req.anyRequest().authenticated();
                 })
                 .formLogin(form -> form.loginPage("/login")
-                .defaultSuccessUrl("/")
-                .permitAll())
+                    .defaultSuccessUrl("/")
+                    .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll())
                 .build();
     }
 }
