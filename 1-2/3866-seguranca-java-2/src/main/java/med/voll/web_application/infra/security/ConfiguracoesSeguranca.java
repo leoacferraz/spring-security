@@ -1,7 +1,9 @@
 package med.voll.web_application.infra.security;
 
+import med.voll.web_application.domain.usuario.Perfil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,6 +24,11 @@ public class ConfiguracoesSeguranca {
         return http
                 .authorizeHttpRequests(req -> {
                         req.requestMatchers("/css/**", "/js/**", "/assets/**", "/", "/index", "/home").permitAll();
+                        req.requestMatchers("/pacientes/**").hasRole("ATENDENTE");
+                        req.requestMatchers(HttpMethod.GET, "/medicos").hasAnyRole("ATENDENTE","PACIENTE");
+                        req.requestMatchers("/medicos/**").hasRole("ATENDENTE");
+                        req.requestMatchers(HttpMethod.POST, "/consultas/**").hasAnyRole("ATENDENTE","PACIENTE");
+                        req.requestMatchers(HttpMethod.PUT, "/consulta/**").hasAnyRole("ATENDENTE", "PACIENTE");
                         req.anyRequest().authenticated();
                     })
                 .formLogin(form -> form.loginPage("/login")
