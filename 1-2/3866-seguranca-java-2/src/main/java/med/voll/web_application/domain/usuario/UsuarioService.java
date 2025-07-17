@@ -1,6 +1,7 @@
 package med.voll.web_application.domain.usuario;
 
 import med.voll.web_application.domain.RegraDeNegocioException;
+import med.voll.web_application.domain.usuario.email.EmailService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,10 +16,12 @@ public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder encriptador;
+    private final EmailService emailService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador, EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
         this.encriptador = encriptador;
+        this.emailService = emailService;
     }
 
     @Override
@@ -32,6 +35,9 @@ public class UsuarioService implements UserDetailsService {
         System.out.println("Senha gerada: " + primeiraSenha);
         String senhaCriptografada = encriptador.encode(primeiraSenha);
         Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
+
+        emailService.enviarSenhaProvisoria(usuario , primeiraSenha);
+
         return usuario.getId();
     }
 
@@ -65,5 +71,6 @@ public class UsuarioService implements UserDetailsService {
         usuario.setExpiracaoToken(LocalDateTime.now().plusMinutes(15));
 
         usuarioRepository.save(usuario);
+        emailService.enviarEmailSenha(usuario);
     }
 }
