@@ -41,7 +41,9 @@
                 </li>
             </ul>
             <div class="navbar-form" sec:authorize="!isAuthenticated()">
-                <a class="btn-link" href="#" th:href="@{/login}">Login</a>
+                <a class="btn-link me-2" href="#" th:href="@{/login}">Login</a>
+                <span class="mx-1 text-muted">|</span>
+                <a class="btn-link ms-2" href="#" th:href="@{/cadastro}">Cadastre-se</a>
             </div>
         </nav>
     </div>

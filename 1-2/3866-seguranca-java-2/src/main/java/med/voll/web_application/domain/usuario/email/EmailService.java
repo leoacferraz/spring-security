@@ -52,7 +52,7 @@ public class EmailService {
         + "Obrigado,<br>"
         + "Clínica Voll Med.", usuario.getNome(), URL_SITE + "/recuperar-conta?codigo=" +usuario.getToken());
 
-        enviarEmail(usuario.getUsername(), assunto, conteudo);
+            enviarEmail(usuario.getUsername(), assunto, conteudo);
     }
 
     public void enviarSenhaProvisoria(Usuario usuario, String senhaProvisoria){
@@ -64,7 +64,7 @@ public class EmailService {
                 "Obrigado,<br>" +
                 "<br>Clínica Voll Med.", usuario.getNome(), senhaProvisoria);
 
-        enviarEmail(usuario.getUsername(), assunto, conteudo);
+            enviarEmail(usuario.getUsername(), assunto, conteudo);
     }
 
     private String gerarConteudoEmail(String template, String nome, String url){
