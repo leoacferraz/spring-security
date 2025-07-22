@@ -523,6 +523,12 @@ body {
   color: #fff;
 }
 
+.separator {
+  padding: 0 8px;
+  color: #888;
+  font-weight: bold;
+}
+
 /* Responsiveness Adjustments */
 @media (max-width: 768px) {
   .container {

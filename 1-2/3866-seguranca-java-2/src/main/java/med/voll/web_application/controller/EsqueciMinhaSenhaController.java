@@ -49,7 +49,7 @@ public class EsqueciMinhaSenhaController {
             service.recuperarConta(codigo, dados);
             return "redirect:login";
         } catch (RegraDeNegocioException e){
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute("erro", e.getMessage());
             return FORMULARIO_RECUPERACAO_CONTA;
         }
     }

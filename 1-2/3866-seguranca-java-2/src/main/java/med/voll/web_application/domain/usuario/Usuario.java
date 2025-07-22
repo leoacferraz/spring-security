@@ -28,8 +28,6 @@ public class Usuario implements UserDetails {
     private Boolean senhaAlterada;
     private String token;
     private LocalDateTime expiracaoToken;
-
-
     @Enumerated(EnumType.STRING)
     private Perfil perfil;
 

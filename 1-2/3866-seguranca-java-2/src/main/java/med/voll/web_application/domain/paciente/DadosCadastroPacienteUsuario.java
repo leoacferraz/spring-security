@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record DadosCadastroPaciente(
+public record DadosCadastroPacienteUsuario(
         Long id,
         @NotBlank
         String nome,
@@ -12,8 +12,12 @@ public record DadosCadastroPaciente(
         @Email
         String email,
         @NotBlank
+        String senha,
+        @NotBlank
         String telefone,
         @NotBlank
         @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")
-        String cpf
-) {}
+        String cpf,
+        Boolean isAtivo
+) {
+}

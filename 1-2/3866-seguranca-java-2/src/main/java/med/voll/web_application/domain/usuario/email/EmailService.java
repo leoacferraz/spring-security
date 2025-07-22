@@ -46,25 +46,37 @@ public class EmailService {
 
     public void enviarEmailSenha(Usuario usuario){
         String assunto = "Aqui está seu link para alterar a senha";
-        String conteudo = gerarConteudoEmail("Olá [[name]],<br>"
+        String conteudo = gerarConteudoEmail("Olá [[name]],<br><br>"
         + "Por favor clique no link abaixo para alterar a senha:<br>"
         + "<h3><a href=\"[[URL]]\" target=\"_self\">ALTERAR</a></h3>"
         + "Obrigado,<br>"
         + "Clínica Voll Med.", usuario.getNome(), URL_SITE + "/recuperar-conta?codigo=" +usuario.getToken());
 
-            enviarEmail(usuario.getUsername(), assunto, conteudo);
+        enviarEmail(usuario.getUsername(), assunto, conteudo);
     }
 
     public void enviarSenhaProvisoria(Usuario usuario, String senhaProvisoria){
         String assunto = "Cadastro Voll Med - Senha Provisória";
-        String conteudo = gerarConteudoSenhaProvisoria("Olá [[name]],<br>"
-        + "Seja Bem Vindo a Voll Med!<br>" +
-                "<br>Segue a sua senha provisória: [[senhaProvisoria]]<br>" +
-                "<br>Você deverá alterá-la no primeiro acesso!<br>" +
-                "Obrigado,<br>" +
-                "<br>Clínica Voll Med.", usuario.getNome(), senhaProvisoria);
+        String conteudo = gerarConteudoSenhaProvisoria("Olá [[name]],<br><br>"
+        + "Seja Bem Vindo a Voll Med!<br><br>"
+        + "Segue a sua senha provisória: [[senhaProvisoria]]<br><br>"
+        + "Você deverá alterá-la no primeiro acesso!<br>"
+        + "Obrigado,<br>"
+        + "Clínica Voll Med.", usuario.getNome(), senhaProvisoria);
 
-            enviarEmail(usuario.getUsername(), assunto, conteudo);
+        enviarEmail(usuario.getUsername(), assunto, conteudo);
+    }
+
+    public void enviarEmailAtivacaoCadastro(Usuario usuario){
+        String assunto = "Cadastro Voll Med - Link de ativação";
+        String conteudo = gerarConteudoEmailAtivacao("Olá [[name]],<br><br>"
+        + "Seja Bem Vindo a Voll Med!<br>"
+        + "Segue abaixo o link para ativação da sua conta:<br>"
+        + "<h3><a href=\"[[URL]]\" target=\"_self\">ATIVAR CONTA</a></h3><br>"
+        + "Obrigado,<br>"
+        + "Clínica Voll Med.", usuario.getNome(),URL_SITE + "/login/ativar-conta?codigo=" + usuario.getToken());
+
+        enviarEmail(usuario.getUsername(), assunto, conteudo);
     }
 
     private String gerarConteudoEmail(String template, String nome, String url){
@@ -73,6 +85,10 @@ public class EmailService {
 
     private String gerarConteudoSenhaProvisoria(String template, String nome, String token){
         return template.replace("[[name]]", nome).replace("[[senhaProvisoria]]", token);
+    }
+
+    private String gerarConteudoEmailAtivacao(String template, String nome, String url){
+        return template.replace("[[name]]", nome).replace("[[URL]]", url);
     }
 
 

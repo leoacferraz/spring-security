@@ -1,7 +1,10 @@
 package med.voll.web_application.domain.usuario;
 
 import med.voll.web_application.domain.RegraDeNegocioException;
+import med.voll.web_application.domain.paciente.Paciente;
+import med.voll.web_application.domain.paciente.PacienteRepository;
 import med.voll.web_application.domain.usuario.email.EmailService;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,17 +20,28 @@ public class UsuarioService implements UserDetailsService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder encriptador;
     private final EmailService emailService;
+    private final PacienteRepository pacienteRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador, EmailService emailService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador, EmailService emailService, PacienteRepository pacienteRepository) {
         this.usuarioRepository = usuarioRepository;
         this.encriptador = encriptador;
         this.emailService = emailService;
+        this.pacienteRepository = pacienteRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByEmailIgnoreCase(username)
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("O usuário não foi encontrado!"));
+
+        if (usuario.getPerfil() == Perfil.PACIENTE) {
+            Paciente paciente = pacienteRepository.findById(usuario.getId()).orElseThrow(
+                    () -> new RegraDeNegocioException("Não existe paciente vinculado a esse usuário"));
+            if (!paciente.getIsAtivo()) {
+                throw new DisabledException("Conta ainda não foi ativada. Verifique o e-mail.");
+            }
+        }
+        return usuario;
     }
 
     public Long salvarUsuario(String nome, String email, Perfil perfil) {
@@ -36,6 +50,19 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
 
         emailService.enviarSenhaProvisoria(usuario , primeiraSenha);
+
+        return usuario.getId();
+    }
+
+    public Long salvarUsuarioAuto(String nome, String email, String senha, Perfil perfil) {
+        String token = UUID.randomUUID().toString();
+        String senhaCriptografada = encriptador.encode(senha);
+        Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
+
+        usuario.setSenhaAlterada(true);
+        usuario.setToken(token);
+
+        emailService.enviarEmailAtivacaoCadastro(usuario);
 
         return usuario.getId();
     }

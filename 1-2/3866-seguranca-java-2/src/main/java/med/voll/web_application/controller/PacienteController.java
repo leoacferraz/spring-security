@@ -66,6 +66,7 @@ public class PacienteController {
         }
     }
 
+
     @DeleteMapping
     public String excluir(Long id) {
         service.excluir(id);

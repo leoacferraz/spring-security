@@ -1,0 +1,1 @@
+ALTER TABLE pacientes CHANGE isAtivo is_ativo BOOLEAN;

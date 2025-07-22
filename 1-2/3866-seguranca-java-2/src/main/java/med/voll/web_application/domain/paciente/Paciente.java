@@ -14,6 +14,7 @@ public class Paciente {
     private String email;
     private String telefone;
     private String cpf;
+    private Boolean isAtivo = false;
 
     @Deprecated
     public Paciente(){}
@@ -23,11 +24,18 @@ public class Paciente {
         modificarDados(dados);
     }
 
+    public Paciente(Long id, DadosCadastroPaciente dados, Boolean isAtivo) {
+        this.id = id;
+        this.isAtivo = isAtivo;
+        modificarDados(dados);
+    }
+
     public void modificarDados(DadosCadastroPaciente dados) {
         this.nome = dados.nome();
         this.email = dados.email();
         this.telefone = dados.telefone();
         this.cpf = dados.cpf();
+        this.isAtivo = false;
     }
     public Long getId() {
         return id;
@@ -47,5 +55,13 @@ public class Paciente {
 
     public String getCpf() {
         return cpf;
+    }
+
+    public Boolean getIsAtivo() {
+        return isAtivo;
+    }
+
+    public void ativarPaciente(){
+        this.isAtivo = true;
     }
 }
